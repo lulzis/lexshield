@@ -239,8 +239,9 @@ else is a summary. Where the law is unsettled, LexShield says so instead of choo
   cites it.
 - **May client data go to a US cloud?** Recognised for data protection since 15 September
   2024 for certified companies; open for professional secrecy because of the US CLOUD Act.
-- **Does a report to the FDPIC breach professional secrecy?** The report needs no names,
-  but reports are official documents, so it should not reveal a mandate.
+- **Does a report to the FDPIC breach professional secrecy?** The report asks only for
+  categories and an approximate number of those affected, not their names, but reports are
+  official documents, so it should not reveal a mandate.
 
 LexShield is not legal advice and does not replace an assessment by security professionals.
 

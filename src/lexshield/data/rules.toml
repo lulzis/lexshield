@@ -221,7 +221,7 @@ why = "Über Remotedesktop dringen Angreifer oft von aussen ein. Ist er ungesch�
 fix = "Wird das Gerät nie aus der Ferne bedient, Remotedesktop ausschalten (Einstellungen › System › Remotedesktop). Sonst den Zugang von der IT-Betreuung absichern lassen. Nutzt eine IT-Firma ihn, im Vertrag die Geheimhaltung prüfen."
 fix_it = "Authentifizierung auf Netzwerkebene (NLA) erzwingen und den Zugang nur über VPN erlauben, nie direkt aus dem Internet."
 legal = "Unbefugte dürfen das Gerät nicht über eine Fernverbindung benutzen können. Eine IT-Firma, die den Zugang nutzt, gilt nach herrschender Lehre als Hilfsperson und ist vertraglich auf das Berufsgeheimnis zu verpflichten."
-basis = "CIS Benchmark: «Benutzerauthentifizierung mit Authentifizierung auf Netzwerkebene erforderlich» aktiviert."
+basis = "CIS Benchmark: Authentifizierung auf Netzwerkebene (NLA) für Remoteverbindungen erforderlich."
 norms = ["dsv3_1c", "bgfa13_2", "ssr38", "dsg9", "dsg8"]
 
 [[rule]]

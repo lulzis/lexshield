@@ -9,7 +9,7 @@
 # Text in «» is the official wording, checked against the source on the date in
 # "checked". Everything outside «» is a summary.
 
-checked = 2026-11-06
+checked = 2026-11-12
 
 # --------------------------------------------------------------------------- duties
 
@@ -38,13 +38,13 @@ text = "Erst bei einer Panne: Gehen Mandatsdaten verloren oder an Unbefugte, ist
 [act.bgfa]
 name = "BGFA"
 title = "Anwaltsgesetz (SR 935.61)"
-binds = "Anwältinnen und Anwälte mit Patent, die im Rahmen des Anwaltsmonopols Parteien vor Gerichtsbehörden vertreten (Art. 2 Abs. 1 BGFA). Die Berufsregeln gelten dann für die ganze Berufstätigkeit, auch für die Beratung (BGE 130 II 270 E. 3.2). Aufsicht: kantonale Aufsichtsbehörde."
+binds = "Anwältinnen und Anwälte mit Patent, die im Rahmen des Anwaltsmonopols Parteien vor Gerichtsbehörden vertreten (Art. 2 Abs. 1 BGFA). Die Pflicht zu sorgfältiger und gewissenhafter Berufsausübung (Art. 12 lit. a BGFA) erfasst dann «sämtliche beruflichen Handlungen» (BGE 130 II 270 E. 3.2). Aufsicht: kantonale Aufsichtsbehörde."
 url = "https://www.fedlex.admin.ch/eli/cc/2002/153/de"
 
 [act.ssr]
 name = "SSR"
 title = "Schweizerische Standesregeln, in Kraft seit 1.7.2023"
-binds = "Richten sich an alle in der Schweiz praktizierenden Anwältinnen und Anwälte, verbindlich sind sie für die Mitglieder des Schweizerischen Anwaltsverbands (Art. 2 SSR); die Disziplinargewalt liegt bei den kantonalen Verbänden (Art. 39 SSR). Gerichte ziehen sie zur Auslegung von Art. 12 BGFA heran, soweit sie eine landesweite Auffassung ausdrücken (BGE 130 II 270)."
+binds = "Richten sich an alle in der Schweiz praktizierenden Anwältinnen und Anwälte, verbindlich sind sie für die Mitglieder des Schweizerischen Anwaltsverbands (Art. 2 SSR); die Disziplinargewalt liegt bei den kantonalen Verbänden (Art. 39 SSR). Zur Auslegung von Art. 12 BGFA taugen Standesregeln nur, soweit sie eine landesweit geltende Auffassung ausdrücken (BGE 130 II 270 E. 3.1.1)."
 url = "https://www.sav-fsa.ch/documents/672183/1748990/Schweizerische_Standesregeln_1.7.23.pdf/53bb74c0-9c9e-2ad8-d396-638aa19066c7"
 
 [act.stgb]
@@ -219,7 +219,7 @@ ref = "Art. 24 DSG"
 duty = "meldung"
 act = "dsg"
 title = "Meldung von Verletzungen der Datensicherheit"
-text = "Eine Verletzung der Datensicherheit, «die voraussichtlich zu einem hohen Risiko für die Persönlichkeit oder die Grundrechte der betroffenen Person führt», ist dem EDÖB «so rasch als möglich» zu melden (Abs. 1). «Der Verantwortliche informiert die betroffene Person, wenn es zu ihrem Schutz erforderlich ist oder der EDÖB es verlangt» (Abs. 4); das darf eingeschränkt werden, wenn «eine gesetzliche Geheimhaltungspflicht dies verbietet» (Abs. 5 lit. a). Im Strafverfahren darf die Meldung gegen die meldende Person nur mit deren Einverständnis verwendet werden (Abs. 6). Erfasst sind nur Verletzungen, die Personendaten betreffen."
+text = "Eine Verletzung der Datensicherheit, «die voraussichtlich zu einem hohen Risiko für die Persönlichkeit oder die Grundrechte der betroffenen Person führt», ist dem EDÖB «so rasch als möglich» zu melden (Abs. 1). «Der Verantwortliche informiert die betroffene Person, wenn es zu ihrem Schutz erforderlich ist oder der EDÖB es verlangt» (Abs. 4); das darf eingeschränkt werden, wenn «eine gesetzliche Geheimhaltungspflicht dies verbietet» (Abs. 5 lit. a). Im Strafverfahren darf die Meldung gegen die meldepflichtige Person nur mit deren Einverständnis verwendet werden (Abs. 6). Erfasst sind nur Verletzungen, die Personendaten betreffen."
 
 [norm.dsv15_4]
 ref = "Art. 15 Abs. 4 DSV"
@@ -247,7 +247,7 @@ sources = [
 
 [[question]]
 title = "Greift die Strafnorm von Art. 61 lit. c DSG?"
-text = "Sie droht privaten Personen auf Antrag eine Busse bis 250 000 Franken an, wenn sie vorsätzlich «die Mindestanforderungen an die Datensicherheit» nicht einhalten. Ein Teil der Lehre meint, die DSV enthalte keine solchen Mindestanforderungen, die Norm laufe darum ins Leere. Der Bundesrat und der EDÖB sehen das anders. Unbestritten anwendbar bleibt lit. b: wer Daten einem Auftragsbearbeiter überträgt, ohne dass die Voraussetzungen von Art. 9 Abs. 1 und 2 DSG erfüllt sind. LexShield zitiert Art. 61 DSG deshalb bei keinem Befund."
+text = "Sie droht privaten Personen auf Antrag eine Busse bis 250 000 Franken an, wenn sie vorsätzlich «die Mindestanforderungen an die Datensicherheit» nicht einhalten. Ein Teil der Lehre meint, die DSV enthalte keine solchen Mindestanforderungen, die Norm laufe darum ins Leere. Der Bundesrat und der EDÖB sehen das anders. Anwendbar bleibt lit. b, die nicht auf die DSV verweist: wer Daten einem Auftragsbearbeiter überträgt, ohne dass die Voraussetzungen von Art. 9 Abs. 1 und 2 DSG erfüllt sind. LexShield zitiert Art. 61 DSG deshalb bei keinem Befund."
 sources = [
     "Meyle/Morand/Vasella, DSV: keine Mindestanforderungen an die Datensicherheit, keine entsprechende Strafbarkeit, weitere Anmerkungen, datenrecht.ch, 19.9.2022 (mit dem Zitat des Bundesrats)",
     "EDÖB, Leitfaden betreffend die Meldung von Datensicherheitsverletzungen und Information der Betroffenen nach Art. 24 DSG, Version 1.2 vom 23.4.2025",
@@ -264,7 +264,7 @@ sources = [
 
 [[question]]
 title = "Verletzt die Meldung an den EDÖB das Berufsgeheimnis?"
-text = "Art. 321 Ziff. 3 StGB behält die «Bestimmungen über die Melde- und Mitwirkungsrechte, über die Zeugnispflicht und über die Auskunftspflicht gegenüber einer Behörde» vor. Die Meldung braucht nur Art, Folgen und Massnahmen sowie, soweit möglich, Kategorien und ungefähre Anzahl der Betroffenen, also keine Namen. Der EDÖB behandelt Meldungen als amtliche Dokumente, die nach dem Öffentlichkeitsgesetz grundsätzlich zugänglich sind. Eine Meldung sollte deshalb kein Mandat erkennen lassen. Eine Stellungnahme der Lehre zu dieser Frage ist LexShield nicht bekannt."
+text = "Art. 321 Ziff. 3 StGB behält die «Bestimmungen über die Melde- und Mitwirkungsrechte, über die Zeugnispflicht und über die Auskunftspflicht gegenüber einer Behörde» vor. Die Meldung beschreibt nach Art. 15 Abs. 1 DSV die Verletzung, ihre Folgen und die Massnahmen und nennt eine Ansprechperson; zu den Betroffenen verlangt sie, soweit möglich, nur Kategorien und ungefähre Anzahl, keine Namen. Der EDÖB behandelt Meldungen als amtliche Dokumente, die nach dem Öffentlichkeitsgesetz grundsätzlich zugänglich sind. Eine Meldung sollte deshalb kein Mandat erkennen lassen. Eine Stellungnahme der Lehre zu dieser Frage ist LexShield nicht bekannt."
 sources = [
     "Art. 321 Ziff. 3 StGB; Art. 24 Abs. 2 DSG; Art. 15 Abs. 1 DSV",
     "EDÖB, Leitfaden betreffend die Meldung von Datensicherheitsverletzungen und Information der Betroffenen nach Art. 24 DSG, Version 1.2 vom 23.4.2025",
