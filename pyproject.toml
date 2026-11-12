@@ -35,8 +35,8 @@ Issues = "https://github.com/lulzis/lexshield/issues"
 Changelog = "https://github.com/lulzis/lexshield/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
-# ruff is pinned so that CI checks the same formatting as a local run.
-dev = ["pytest>=8", "ruff==0.17.3"]
+# ruff is pinned so that CI and a local run apply the same rules and formatting.
+dev = ["pytest>=8", "ruff==0.17.4"]
 
 [project.scripts]
 lexshield = "lexshield.cli:main"
@@ -59,4 +59,6 @@ line-length = 120
 target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "SIM"]
+# The default rules of the pinned ruff version, plus all of pycodestyle, isort, bugbear,
+# pyupgrade and simplify.
+extend-select = ["E", "W", "I", "B", "UP", "SIM"]

@@ -287,6 +287,8 @@ py -m venv .venv
 .venv\Scripts\python -m pip install -e ".[dev]"
 .venv\Scripts\python -m pytest                              # offline tests
 $env:LEXSHIELD_LIVE = "1"; .venv\Scripts\python -m pytest   # plus the real collector
+.venv\Scripts\ruff check .                                  # lint (ruff version pinned in pyproject.toml)
+.venv\Scripts\ruff format --check .                         # formatting
 ```
 
 See [CHANGELOG.md](CHANGELOG.md) for changes and [SECURITY.md](SECURITY.md) for reporting a

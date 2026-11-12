@@ -281,7 +281,7 @@ def test_reports_carry_notes_and_read_errors(tmp_path, capsys):
 
 
 def test_crash_is_exit_2_not_exit_1(monkeypatch, capsys):
-    import lexshield.cli as cli
+    from lexshield import cli
 
     def boom(*args, **kwargs):
         raise RuntimeError("kaputt")
@@ -325,7 +325,7 @@ VIEWS = (
 
 
 def test_no_color_is_accepted_everywhere_and_switches_colour_off(monkeypatch, capsys):
-    import lexshield.cli as cli
+    from lexshield import cli
 
     monkeypatch.setattr(cli, "color_supported", lambda stream: True)  # as in a real terminal
     for argv in VIEWS:

@@ -8,7 +8,16 @@ from datetime import datetime
 
 from . import __version__
 from .checks import as_bool, windows_name
-from .engine import CATEGORIES, RANK, VERDICT_INCOMPLETE, Finding, Report, Rule, load_law, profile_overrides
+from .engine import (
+    CATEGORIES,
+    RANK,
+    VERDICT_INCOMPLETE,
+    Finding,
+    Report,
+    Rule,
+    load_law,
+    profile_overrides,
+)
 
 SEVERITY_DE = {"critical": "kritisch", "high": "hoch", "medium": "mittel", "low": "gering"}
 

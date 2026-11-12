@@ -217,7 +217,8 @@ def evaluate(
     for rule in rules:
         try:
             outcome = CHECKS[rule.check](facts, rule.params, ctx)
-        except Exception:  # one malformed fact must not abort the whole audit
+        # One malformed fact must not abort the whole audit, whatever it raises.
+        except Exception:  # noqa: BLE001
             outcome = Outcome(SKIP, "Prüfung fehlgeschlagen: unerwartete Werte in der Erhebung")
         severity = overrides.get(rule.id, rule.severity)
         if outcome.severity and RANK[outcome.severity] < RANK[severity]:
