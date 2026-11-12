@@ -40,10 +40,19 @@ def method(pointer: c_void_p, index: int, *argtypes):
 
 def main() -> int:
     if sys.platform != "win32":
-        print("Windows only.")
+        print("Windows only.", file=sys.stderr)
         return 1
+    try:
+        list_products()
+    except OSError as error:  # a failing HRESULT, e.g. no Security Center on Windows Server
+        print(f"Windows Security Center API not available: {error}", file=sys.stderr)
+        return 1
+    return 0
+
+
+def list_products() -> None:
     ole32 = ctypes.OleDLL("ole32")
-    ole32.CoInitializeEx(None, 2)
+    ole32.CoInitializeEx(None, 2)  # COINIT_APARTMENTTHREADED
     for label, provider in PROVIDERS.items():
         product_list = c_void_p()
         ole32.CoCreateInstance(
@@ -60,10 +69,9 @@ def main() -> int:
             method(product, 8, POINTER(c_int))(byref(state))  # get_ProductState
             method(product, 9, POINTER(c_int))(byref(signatures))  # get_SignatureStatus
             print(
-                f"{label:<9} {name.value:<35} {STATES.get(state.value, state.value):<8} "
+                f"{label:<9} {name.value or '(no name)':<35} {STATES.get(state.value, state.value):<8} "
                 f"signatures {SIGNATURES.get(signatures.value, signatures.value)}"
             )
-    return 0
 
 
 if __name__ == "__main__":
