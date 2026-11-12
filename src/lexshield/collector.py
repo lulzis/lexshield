@@ -9,7 +9,13 @@ from importlib import resources
 
 # -ExecutionPolicy Bypass applies to this one process only; it changes no system setting.
 POWERSHELL = [
-    "powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File",
+    "powershell.exe",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
 ]
 
 

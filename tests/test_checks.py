@@ -40,8 +40,13 @@ def test_decode_wsc_state(value, state, current, microsoft):
 
 def test_windows_name_ignores_misleading_product_name():
     # The registry says "Windows 10 Pro" on every Windows 11 machine.
-    os_facts = {"product_name": "Windows 10 Pro", "edition_id": "Professional", "display_version": "25H2",
-                "build": 26200, "ubr": 9711}
+    os_facts = {
+        "product_name": "Windows 10 Pro",
+        "edition_id": "Professional",
+        "display_version": "25H2",
+        "build": 26200,
+        "ubr": 9711,
+    }
     assert windows_name(os_facts) == "Windows 11 Pro 25H2 (Build 26200.9711)"
 
 
@@ -107,7 +112,10 @@ def test_windows10_with_esu_is_a_warning(history, status, ctx):
 
 
 def test_windows10_before_22h2_has_no_esu(ctx):
-    facts = {**os_facts(19044), "updates": {"history": [update("2026-10-16", "2026-10 Sicherheitsupdate für Windows 10")]}}
+    facts = {
+        **os_facts(19044),
+        "updates": {"history": [update("2026-10-16", "2026-10 Sicherheitsupdate für Windows 10")]},
+    }
     outcome = run("os_lifecycle", facts, ctx, warn_days=90)
     assert outcome.status == FAIL and outcome.detail.endswith("(Version vor 22H2)")
 
@@ -131,7 +139,10 @@ def test_office_lifecycle(office, status, ctx):
 
 
 def test_office_generations_deduplicate_c2r_and_uninstall_entries():
-    office = {"c2r_products": ["HomeBusiness2019Retail"], "installed": ["Microsoft Office Home and Business 2019 - de-de"]}
+    office = {
+        "c2r_products": ["HomeBusiness2019Retail"],
+        "installed": ["Microsoft Office Home and Business 2019 - de-de"],
+    }
     assert office_generations(office) == {"2019": "Office 2019"}
 
 
@@ -142,7 +153,11 @@ def test_office_generations_deduplicate_c2r_and_uninstall_entries():
     ("title", "kb", "expected"),
     [
         ("2026-10 Sicherheitsupdate (KB5127648) (26200.9711)", "KB5127648", True),
-        ("2025-09 Kumulatives Update für Windows 10 Version 22H2 für x64-basierte Systeme (KB5000001)", "KB5000001", True),
+        (
+            "2025-09 Kumulatives Update für Windows 10 Version 22H2 für x64-basierte Systeme (KB5000001)",
+            "KB5000001",
+            True,
+        ),
         ("2025-09 Cumulative Update for Windows 11 Version 23H2 for x64-based Systems (KB5000002)", "KB5000002", True),
         ("2026-10 .NET Framework Sicherheitsupdate (KB5127690)", "KB5127690", False),
         ("Windows-Tool zum Entfernen bösartiger Software x64 - v5.146 (KB890830)", "KB890830", False),
@@ -161,8 +176,9 @@ def test_update_age(last, status, ctx):
 
 
 def test_update_age_falls_back_to_hotfix_list(ctx):
-    outcome = run("update_age", {"updates": {"history": [], "latest_hotfix": "2026-10-20"}}, ctx,
-                  warn_days=35, fail_days=65)
+    outcome = run(
+        "update_age", {"updates": {"history": [], "latest_hotfix": "2026-10-20"}}, ctx, warn_days=35, fail_days=65
+    )
     assert outcome.status == PASS and "Hotfix" in outcome.detail
 
 
@@ -213,9 +229,11 @@ def test_firewall_profile_off_fails(ctx):
 
 def disks(*drives):
     """BitLocker facts: C: is the system drive, further drives follow."""
-    return {"bitlocker": {"drives": [
-        {"drive": "CDEF"[i] + ":", "system": i == 0, **drive} for i, drive in enumerate(drives)
-    ]}}
+    return {
+        "bitlocker": {
+            "drives": [{"drive": "CDEF"[i] + ":", "system": i == 0, **drive} for i, drive in enumerate(drives)]
+        }
+    }
 
 
 def test_bitlocker_off_with_local_documents_escalates_to_critical(ctx):
@@ -242,8 +260,10 @@ def test_bitlocker_checks_every_fixed_drive(ctx):
     outcome = run("bitlocker", disks({"shell_value": 1}, {"shell_value": 2}), ctx)
     assert outcome.status == FAIL and outcome.detail == "Laufwerk D: ist nicht verschlüsselt"
     # Documents lie on the system drive; an unencrypted data drive does not make them critical.
-    facts = {**disks({"shell_value": 1}, {"shell_value": 2}),
-             "local_docs": {"downloads": {"documents": 5, "older_than_30_days": 0}}}
+    facts = {
+        **disks({"shell_value": 1}, {"shell_value": 2}),
+        "local_docs": {"downloads": {"documents": 5, "older_than_30_days": 0}},
+    }
     assert run("bitlocker", facts, ctx).severity is None
     outcome = run("bitlocker", disks({"shell_value": 1}, {"shell_value": 1}), ctx)
     assert outcome.status == PASS and outcome.detail.startswith("Laufwerke C:, D: sind mit BitLocker")
@@ -278,12 +298,28 @@ WAKE = {"ac": 1, "dc": 1}  # power setting CONSOLELOCK: sign-in required on wake
         ({"sleep_s": {"ac": 900}}, SKIP),
         # Modern Standby: switching the screen off is standby, plus the delay before the sign-in.
         ({"sleep_s": {"ac": 0}, "screen_off_s": {"ac": 600}, "modern_standby": True, "wake_lock": WAKE}, PASS),
-        ({"sleep_s": {"ac": 0}, "screen_off_s": {"ac": 600}, "modern_standby": True, "wake_lock": WAKE,
-          "delay_lock_s": 900}, WARN),
+        (
+            {
+                "sleep_s": {"ac": 0},
+                "screen_off_s": {"ac": 600},
+                "modern_standby": True,
+                "wake_lock": WAKE,
+                "delay_lock_s": 900,
+            },
+            WARN,
+        ),
         ({"sleep_s": {"ac": 0}, "screen_off_s": {"ac": 10800}, "modern_standby": True, "wake_lock": WAKE}, WARN),
         ({"sleep_s": {"ac": 0}, "screen_off_s": {"ac": 600}, "modern_standby": False, "wake_lock": WAKE}, FAIL),
-        ({"sleep_s": {"ac": 0}, "screen_off_s": {"ac": 600}, "modern_standby": True, "wake_lock": WAKE,
-          "delay_lock_s": 4294967295}, FAIL),  # "never"
+        (
+            {
+                "sleep_s": {"ac": 0},
+                "screen_off_s": {"ac": 600},
+                "modern_standby": True,
+                "wake_lock": WAKE,
+                "delay_lock_s": 4294967295,
+            },
+            FAIL,
+        ),  # "never"
     ],
 )
 def test_screen_lock(lock, status, ctx):
@@ -297,8 +333,11 @@ def test_screen_lock_says_what_happens_on_battery(ctx):
 
 
 def test_admin_count_ignores_disabled_accounts(ctx):
-    admins = [{"name": "PC\\Administrator", "enabled": False}, {"name": "PC\\a", "enabled": True},
-              {"name": "PC\\b", "enabled": None}]
+    admins = [
+        {"name": "PC\\Administrator", "enabled": False},
+        {"name": "PC\\a", "enabled": True},
+        {"name": "PC\\b", "enabled": None},
+    ]
     outcome = run("admin_count", {"accounts": {"admins": admins}}, ctx, max_enabled=2)
     assert outcome.status == PASS
     assert outcome.detail == "2 aktive Administratorkonten: a, b (1 deaktiviert)"
@@ -335,7 +374,11 @@ def test_uac_prompt_disabled_fails(ctx):
         ("local_documents", {"local_docs": {"desktop": {"documents": "viele", "older_than_30_days": 3}}}, SKIP),
         ("local_documents", {"local_docs": {"desktop": {"documents": -500, "older_than_30_days": 0}}}, SKIP),
         ("local_documents", {"local_docs": {"desktop": {"documents": 3, "older_than_30_days": 435}}}, SKIP),
-        ("local_documents", {"local_docs": {"desktop": None, "downloads": {"documents": 4, "older_than_30_days": 1}}}, PASS),
+        (
+            "local_documents",
+            {"local_docs": {"desktop": None, "downloads": {"documents": 4, "older_than_30_days": 1}}},
+            PASS,
+        ),
         ("update_age", {"updates": {"latest_hotfix": "2027-03-01"}}, SKIP),  # after the collection date
     ],
 )
@@ -379,8 +422,13 @@ def test_switched_off_defender_has_no_signature_verdict(ctx):
 
 
 def test_firewall_that_lets_everything_in_fails(ctx):
-    facts = {"firewall": {"profiles": {"Domain": "True", "Private": "True", "Public": "True"},
-                          "inbound": {"Domain": "Block", "Private": "Allow", "Public": "Block"}, "products": []}}
+    facts = {
+        "firewall": {
+            "profiles": {"Domain": "True", "Private": "True", "Public": "True"},
+            "inbound": {"Domain": "Block", "Private": "Allow", "Public": "Block"},
+            "products": [],
+        }
+    }
     outcome = run("firewall", facts, ctx)
     assert outcome.status == FAIL and "privates Netzwerk" in outcome.detail
 

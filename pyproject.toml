@@ -35,7 +35,8 @@ Issues = "https://github.com/lulzis/lexshield/issues"
 Changelog = "https://github.com/lulzis/lexshield/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+# ruff is pinned so that CI checks the same formatting as a local run.
+dev = ["pytest>=8", "ruff==0.17.3"]
 
 [project.scripts]
 lexshield = "lexshield.cli:main"
@@ -52,3 +53,10 @@ lexshield = ["data/*.toml", "collect.ps1"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

@@ -126,7 +126,7 @@ def test_every_open_finding_states_its_legal_meaning(capsys):
 def test_summary_names_the_duties_that_are_touched(capsys):
     main(["scan", "--facts", RISKY, "--no-color"])
     out = capsys.readouterr().out
-    summary = out[out.index("RECHTLICH BETROFFEN"):]
+    summary = out[out.index("RECHTLICH BETROFFEN") :]
     for label in ("Berufsgeheimnis", "Datensicherheit", "Sorgfalt und Haftung", "Meldepflicht"):
         assert label in summary
     assert "Betroffen: Festplattenverschlüsselung" in summary
@@ -144,7 +144,11 @@ def test_no_legal_summary_without_open_findings(solid):
 
 
 def test_norm_references_never_break_across_lines(capsys):
-    for argv in (["scan", "--facts", RISKY, "--no-color", "--verbose"], ["explain", "festplatte"], ["law", "--no-color"]):
+    for argv in (
+        ["scan", "--facts", RISKY, "--no-color", "--verbose"],
+        ["explain", "festplatte"],
+        ["law", "--no-color"],
+    ):
         main(argv)
         for line in capsys.readouterr().out.splitlines():
             assert not line.rstrip().endswith((" Art.", " Abs.", " lit.", " Ziff.")), line
@@ -155,8 +159,17 @@ def test_a_reference_stays_on_one_line(width):
     from lexshield.report import wrap
 
     references = [
-        "Art. 3 Abs. 2 lit. a DSV", "Art. 321 Ziff. 1 Abs. 3 StGB", "Art. 2 Abs. 1 BGFA", "BGE 130 II 270 E. 3.2",
-        "Art. 321 N 19", "Fn. 15", "25 ff.", "250 000", "Ziff. III.4.C", "Abs. 5 lit. a DSG", "Art. 394 ff. OR",
+        "Art. 3 Abs. 2 lit. a DSV",
+        "Art. 321 Ziff. 1 Abs. 3 StGB",
+        "Art. 2 Abs. 1 BGFA",
+        "BGE 130 II 270 E. 3.2",
+        "Art. 321 N 19",
+        "Fn. 15",
+        "25 ff.",
+        "250 000",
+        "Ziff. III.4.C",
+        "Abs. 5 lit. a DSG",
+        "Art. 394 ff. OR",
     ]
     text = "Siehe " + ", dann ".join(references) + "."
     lines = [line.replace("\N{NO-BREAK SPACE}", " ") for line in wrap(text, width, 0)]
@@ -254,7 +267,11 @@ def test_reports_carry_notes_and_read_errors(tmp_path, capsys):
     path, md, js = tmp_path / "t.json", tmp_path / "r.md", tmp_path / "r.json"
     path.write_text(json.dumps(facts), encoding="utf-8")
     main(["scan", "--facts", str(path), "--no-color", "--md", str(md), "--json", str(js)])
-    out, markdown, data = capsys.readouterr().out, md.read_text(encoding="utf-8"), json.loads(js.read_text(encoding="utf-8"))
+    out, markdown, data = (
+        capsys.readouterr().out,
+        md.read_text(encoding="utf-8"),
+        json.loads(js.read_text(encoding="utf-8")),
+    )
     for text in (" ".join(out.split()), markdown):  # the terminal wraps long lines
         assert "Erhebungsdatum unlesbar, Stichtag heute" in text
         assert "nicht als Administrator gestartet" in text
@@ -280,7 +297,7 @@ def test_the_to_do_list_comes_last_and_says_who_fixes_what(capsys, tmp_path):
     # Legal summary, then the result, then the to-do list: what is left on screen is what to do.
     assert out.index("RECHTLICH BETROFFEN") < out.index("ERGEBNIS") < out.index("Zu tun, das Dringendste zuerst")
     assert "KRITISCH  4 Punkte sofort beheben" in out
-    todo = out[out.index("Zu tun"):].splitlines()
+    todo = out[out.index("Zu tun") :].splitlines()
     first, second = todo[1].split(), todo[2].split()
     assert first[:2] == ["KRITISCH", "Virenschutz"] and first[-2:] == ["selbst", "virenschutz"]
     assert second[-2:] == ["IT-Betreuung", "windows"]
@@ -338,7 +355,10 @@ def test_every_view_fits_the_terminal(monkeypatch, capsys, columns):
 def test_characters_the_console_lacks_stay_readable():
     from lexshield.cli import PLAIN
 
-    text = "Art.\N{NO-BREAK SPACE}8 \N{EN DASH} Kanzlei \N{RIGHTWARDS ARROW} hoch\N{HORIZONTAL ELLIPSIS} \N{LEFT-POINTING DOUBLE ANGLE QUOTATION MARK}ok\N{RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK} \N{CHECK MARK}"
+    text = (
+        "Art.\N{NO-BREAK SPACE}8 \N{EN DASH} Kanzlei \N{RIGHTWARDS ARROW} hoch\N{HORIZONTAL ELLIPSIS} "
+        "\N{LEFT-POINTING DOUBLE ANGLE QUOTATION MARK}ok\N{RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK} \N{CHECK MARK}"
+    )
     assert text.encode("ascii", errors="lexshield") == b'Art. 8 - Kanzlei -> hoch... "ok" ?'
     # Code page 850, the usual one in Switzerland, keeps umlauts and guillemets as they are.
     umlauts = "Prüfung \N{EN DASH} «Berufsgeheimnis»"

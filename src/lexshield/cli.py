@@ -25,18 +25,23 @@ from .report import (
     report_to_dict,
 )
 
-
 # Characters a code page such as 850 lacks, written so that the text stays readable.
 PLAIN = {
-    "\N{EN DASH}": "-", "\N{EM DASH}": "-", "\N{RIGHTWARDS ARROW}": "->", "\N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK}": ">",
-    "\N{SINGLE LEFT-POINTING ANGLE QUOTATION MARK}": "<", "\N{HORIZONTAL ELLIPSIS}": "...",
-    "\N{LEFT-POINTING DOUBLE ANGLE QUOTATION MARK}": '"', "\N{RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK}": '"',
-    "\N{NO-BREAK SPACE}": " ", "\N{NON-BREAKING HYPHEN}": "-",
+    "\N{EN DASH}": "-",
+    "\N{EM DASH}": "-",
+    "\N{RIGHTWARDS ARROW}": "->",
+    "\N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK}": ">",
+    "\N{SINGLE LEFT-POINTING ANGLE QUOTATION MARK}": "<",
+    "\N{HORIZONTAL ELLIPSIS}": "...",
+    "\N{LEFT-POINTING DOUBLE ANGLE QUOTATION MARK}": '"',
+    "\N{RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK}": '"',
+    "\N{NO-BREAK SPACE}": " ",
+    "\N{NON-BREAKING HYPHEN}": "-",
 }
 
 
 def plain(error: UnicodeEncodeError) -> tuple[str, int]:
-    text = error.object[error.start:error.end]
+    text = error.object[error.start : error.end]
     return "".join(PLAIN.get(char, "?") for char in text), error.end
 
 
@@ -112,7 +117,9 @@ def build_parser(profiles: dict) -> argparse.ArgumentParser:
     scan.add_argument("--json", metavar="DATEI", help="Bericht als JSON speichern")
     scan.add_argument("--md", metavar="DATEI", help="Bericht als Markdown speichern")
     scan.add_argument(
-        "--fail-on", choices=[*SEVERITIES, "never"], default="high",
+        "--fail-on",
+        choices=[*SEVERITIES, "never"],
+        default="high",
         help="Exit-Code 1 ab dieser Schwere (Standard: high)",
     )
     view = scan.add_mutually_exclusive_group()
@@ -125,7 +132,9 @@ def build_parser(profiles: dict) -> argparse.ArgumentParser:
     explain = commands.add_parser("explain", parents=[common], help="einen Punkt mit Rechtsrahmen erklären")
     explain.add_argument("rule_name", metavar="KURZNAME", help="zum Beispiel virenschutz (Liste: lexshield rules)")
 
-    commands.add_parser("law", parents=[common], help="Rechtsrahmen: Pflichten, Normen, wer gebunden ist, offene Fragen")
+    commands.add_parser(
+        "law", parents=[common], help="Rechtsrahmen: Pflichten, Normen, wer gebunden ist, offene Fragen"
+    )
     commands.add_parser("rules", parents=[common], help="alle Prüfpunkte mit Kurznamen auflisten")
     commands.add_parser("profiles", parents=[common], help="Kanzleiprofile auflisten")
     return parser

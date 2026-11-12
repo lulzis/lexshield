@@ -95,19 +95,28 @@ def wrap(text: str, width: int, indent: int, label: str = "", label_width: int =
     # Words are never cut, not even at hyphens: German compounds such as
     # "BitLocker-Laufwerkverschlüsselung" stay whole, and so do URLs, which stay clickable.
     return textwrap.wrap(
-        text, width=width, initial_indent=first, subsequent_indent=rest,
-        break_on_hyphens=False, break_long_words=False,
+        text,
+        width=width,
+        initial_indent=first,
+        subsequent_indent=rest,
+        break_on_hyphens=False,
+        break_long_words=False,
     ) or [first.rstrip()]
 
 
 def labeled(
-    style: Style, label: str, text: str, width: int, indent: int = TEXT, label_width: int = LABEL,
+    style: Style,
+    label: str,
+    text: str,
+    width: int,
+    indent: int = TEXT,
+    label_width: int = LABEL,
     strong: bool = False,
 ) -> list[str]:
     """Wrapped text with a label in front of the first line: dimmed, or bold when strong."""
     lines = wrap(text, width, indent, label, label_width)
     styled = style.bold(label) + " " * (label_width - len(label)) if strong else style.dim(label.ljust(label_width))
-    lines[0] = " " * indent + styled + lines[0][indent + label_width:]
+    lines[0] = " " * indent + styled + lines[0][indent + label_width :]
     return lines
 
 
@@ -172,7 +181,7 @@ def nb(text: str) -> str:
 
 
 def short_ref(ref: str) -> str:
-    """"Art. 3 Abs. 2 lit. f DSV" -> "Art. 3 DSV", for summaries that name each article once."""
+    """ "Art. 3 Abs. 2 lit. f DSV" -> "Art. 3 DSV", for summaries that name each article once."""
     return re.sub(r" (Abs\.|lit\.|Ziff\.) \S+", "", ref)
 
 
@@ -328,7 +337,9 @@ def summary_lines(report: Report, style: Style, width: int, law: dict) -> list[s
         for finding in unverified:
             lines += list_line(style, finding, "skip", width, "", name_width)
         if as_bool((report.facts.get("host") or {}).get("elevated")) is False:
-            lines += labeled(style, "Hinweis", "Als Administrator starten, um mehr prüfen zu können", width, PAD, TEXT - PAD)
+            lines += labeled(
+                style, "Hinweis", "Als Administrator starten, um mehr prüfen zu können", width, PAD, TEXT - PAD
+            )
     if issues:
         lines += ["", " " * PAD + "Zu tun, das Dringendste zuerst"]
         for finding in issues:
@@ -351,8 +362,9 @@ def legal_summary(report: Report, style: Style, width: int, law: dict) -> list[s
     # The SSR bind only members of the bar association; say so once, where they are cited.
     if any(law["norm"][k]["act"] == "ssr" for k in report.cited_norms() if k in law["norm"]):
         lines += [*dimmed(style, SSR_NOTE, width, PAD + DUTY_LABEL), ""]
-    lines += labeled(style, "Mehr dazu", "lexshield law  (Rechtsrahmen, wer gebunden ist, offene Fragen)",
-                     width, PAD, DUTY_LABEL)
+    lines += labeled(
+        style, "Mehr dazu", "lexshield law  (Rechtsrahmen, wer gebunden ist, offene Fragen)", width, PAD, DUTY_LABEL
+    )
     return lines
 
 
@@ -430,7 +442,8 @@ def render_law(law: dict, rules: list[Rule], *, color: bool = False, width: int 
         *wrap(
             f"LexShield ordnet jeden Befund einer oder mehreren von {len(law['duty'])} Pflichten zu. "
             "Text in «» ist Gesetzeswortlaut, alles andere eine Zusammenfassung. Keine Rechtsberatung.",
-            width, PAD,
+            width,
+            PAD,
         ),
     ]
     checked_by = {key: [r.name for r in rules if key in r.norms] for key in norms}

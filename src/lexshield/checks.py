@@ -8,9 +8,10 @@ which is how the test suite exercises them.
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
-from typing import Any, Callable
+from typing import Any
 
 PASS, WARN, FAIL, SKIP = "pass", "warn", "fail", "skip"
 
@@ -196,7 +197,8 @@ def os_lifecycle(facts: dict, params: dict, ctx: Context) -> Outcome:
         latest = esu_update(facts, end, ctx.ref_date)
         if latest:
             return Outcome(
-                WARN, f"{name}: Sicherheitsupdates nur noch über Extended Security Updates (ESU), "
+                WARN,
+                f"{name}: Sicherheitsupdates nur noch über Extended Security Updates (ESU), "
                 f"zuletzt am {fmt_date(latest)}",
             )
         return Outcome(FAIL, outcome.detail + " (Extended Security Updates nicht erkannt)")
@@ -323,12 +325,14 @@ def security_products(facts: dict, path: str) -> list[dict]:
         state = as_int(product.get("product_state"))
         if state is None or not 0 <= state <= 0xFFFFFF:  # outside the documented 24-bit field
             continue
-        products.append({
-            "name": str(product.get("name") or "Unbekannt"),
-            # False when the product's program file is gone: an entry left behind by an uninstall
-            "present": as_bool(product.get("exe_present")),
-            **decode_wsc_state(state),
-        })
+        products.append(
+            {
+                "name": str(product.get("name") or "Unbekannt"),
+                # False when the product's program file is gone: an entry left behind by an uninstall
+                "present": as_bool(product.get("exe_present")),
+                **decode_wsc_state(state),
+            }
+        )
     return products
 
 
@@ -411,7 +415,8 @@ def firewall(facts: dict, params: dict, ctx: Context) -> Outcome:
     # Switched on but letting every incoming connection through protects nothing.
     inbound = get(facts, "firewall.inbound")
     allowed = [
-        PROFILE_DE.get(name, name) for name, action in (inbound.items() if isinstance(inbound, dict) else [])
+        PROFILE_DE.get(name, name)
+        for name, action in (inbound.items() if isinstance(inbound, dict) else [])
         if str(action).strip().lower() == "allow"
     ]
     if allowed and not third_party:
@@ -429,7 +434,9 @@ def secure_boot(facts: dict, params: dict, ctx: Context) -> Outcome:
         # Windows reports the switch to the certificates of 2023; older Windows has no such value.
         status = facts.get("secure_boot_ca2023")
         if isinstance(status, str) and status.strip() and status.strip().lower() != "updated":
-            return Outcome(WARN, f"Secure Boot ist eingeschaltet, die neuen Zertifikate von 2023 fehlen (Status «{status}»)")
+            return Outcome(
+                WARN, f"Secure Boot ist eingeschaltet, die neuen Zertifikate von 2023 fehlen (Status «{status}»)"
+            )
         return Outcome(PASS, "Secure Boot ist eingeschaltet")
     if value == 0:
         return Outcome(FAIL, "Secure Boot ist ausgeschaltet")
@@ -466,9 +473,18 @@ OFFICE_YEAR = re.compile(r"(2016|2019|2021|2024)")
 INSTALLED_YEAR = re.compile(r"\b(2007|2010|2013|2016|2019|2021|2024)\b")
 # Click-to-Run product IDs without a year belong to the Office 2016 generation.
 C2R_2016 = {
-    "ProPlusRetail", "ProPlusVolume", "StandardRetail", "StandardVolume", "HomeBusinessRetail",
-    "HomeStudentRetail", "ProfessionalRetail", "PersonalRetail", "VisioProRetail", "VisioStdRetail",
-    "ProjectProRetail", "ProjectStdRetail",
+    "ProPlusRetail",
+    "ProPlusVolume",
+    "StandardRetail",
+    "StandardVolume",
+    "HomeBusinessRetail",
+    "HomeStudentRetail",
+    "ProfessionalRetail",
+    "PersonalRetail",
+    "VisioProRetail",
+    "VisioStdRetail",
+    "ProjectProRetail",
+    "ProjectStdRetail",
 }
 
 
@@ -568,8 +584,11 @@ def daily_admin(facts: dict, params: dict, ctx: Context) -> Outcome:
     account = f"Das angemeldete Konto {short_name(str(session))}" if session else "Das angemeldete Konto"
     if value is None:
         if session:
-            return Outcome(SKIP, f"Rechte des angemeldeten Kontos {short_name(str(session))} nicht eindeutig "
-                                 "(Mitglied über eine Gruppe?)")
+            return Outcome(
+                SKIP,
+                f"Rechte des angemeldeten Kontos {short_name(str(session))} nicht eindeutig "
+                "(Mitglied über eine Gruppe?)",
+            )
         return Outcome(SKIP, "Kontorechte nicht lesbar")
     if value:
         return Outcome(FAIL, f"{account} hat Administratorrechte")
@@ -680,8 +699,12 @@ def screen_lock(facts: dict, params: dict, ctx: Context) -> Outcome:
         candidates.append((policy, "Richtlinie"))
     for key in ("screensaver_policy", "screensaver"):
         saver = lock.get(key)
-        if isinstance(saver, dict) and as_bool(saver.get("exe_set")) is True and as_int(saver.get("active")) == 1 \
-                and as_int(saver.get("secure")) == 1:
+        if (
+            isinstance(saver, dict)
+            and as_bool(saver.get("exe_set")) is True
+            and as_int(saver.get("active")) == 1
+            and as_int(saver.get("secure")) == 1
+        ):
             timeout = as_count(saver.get("timeout_s"))
             if timeout:
                 candidates.append((timeout, "Bildschirmschoner mit Anmeldung"))
@@ -782,16 +805,25 @@ def bitlocker(facts: dict, params: dict, ctx: Context) -> Outcome:
         if system in off and docs and docs[0] > 0:
             # The documents in Downloads and on the desktop lie on the system drive.
             return Outcome(
-                FAIL, f"{detail}. Allein in Downloads und auf dem Desktop liegen {docs[0]} Dokumente{note}",
+                FAIL,
+                f"{detail}. Allein in Downloads und auf dem Desktop liegen {docs[0]} Dokumente{note}",
                 severity="critical",
             )
         return Outcome(FAIL, detail + note)
     if "suspended" in states:
-        return Outcome(WARN, drive_list(states["suspended"], "ist verschlüsselt, der Schutz aber angehalten",
-                                        "sind verschlüsselt, der Schutz aber angehalten") + note)
+        return Outcome(
+            WARN,
+            drive_list(
+                states["suspended"],
+                "ist verschlüsselt, der Schutz aber angehalten",
+                "sind verschlüsselt, der Schutz aber angehalten",
+            )
+            + note,
+        )
     if "encrypting" in states:
-        return Outcome(WARN, drive_list(states["encrypting"], "wird noch verschlüsselt", "werden noch verschlüsselt")
-                       + note)
+        return Outcome(
+            WARN, drive_list(states["encrypting"], "wird noch verschlüsselt", "werden noch verschlüsselt") + note
+        )
     if unclear:
         return Outcome(SKIP, f"BitLocker-Status von {', '.join(unclear)} unklar; als Administrator starten")
     source = " (laut Windows-Explorer; als Administrator genauer)" if explorer else ""

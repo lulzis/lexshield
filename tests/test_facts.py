@@ -33,8 +33,10 @@ def test_normalize_drops_sections_in_the_wrong_format_and_strips_control_charact
     facts = normalize({"host": {"name": "PC\x1b[2K\n## x"}, "os": "Windows", "lock": [], "collector_errors": "x"})
     assert facts["host"]["name"] == "PC [2K ## x"  # ESC and the line break each become a space
     assert facts["os"] is None and facts["lock"] is None
-    assert facts["collector_errors"] == ["os: unerwartetes Format, nicht ausgewertet",
-                                         "lock: unerwartetes Format, nicht ausgewertet"]
+    assert facts["collector_errors"] == [
+        "os: unerwartetes Format, nicht ausgewertet",
+        "lock: unerwartetes Format, nicht ausgewertet",
+    ]
 
 
 def test_normalize_survives_any_root_and_deep_nesting():

@@ -54,9 +54,23 @@ def test_risky_firm_is_critical(risky):
     result = statuses(report)
     assert report.assessment() == "KRITISCH"
     expected_fail = {
-        "LS-SYS-01", "LS-SYS-02", "LS-SYS-03", "LS-SYS-05", "LS-SYS-06", "LS-SYS-07",
-        "LS-SYS-08", "LS-SYS-09", "LS-ACC-01", "LS-ACC-02", "LS-ACC-03", "LS-ACC-04", "LS-ACC-05",
-        "LS-ACC-06", "LS-DAT-01", "LS-DAT-02", "LS-NET-01",
+        "LS-SYS-01",
+        "LS-SYS-02",
+        "LS-SYS-03",
+        "LS-SYS-05",
+        "LS-SYS-06",
+        "LS-SYS-07",
+        "LS-SYS-08",
+        "LS-SYS-09",
+        "LS-ACC-01",
+        "LS-ACC-02",
+        "LS-ACC-03",
+        "LS-ACC-04",
+        "LS-ACC-05",
+        "LS-ACC-06",
+        "LS-DAT-01",
+        "LS-DAT-02",
+        "LS-NET-01",
     }
     assert {rule for rule, status in result.items() if status == "fail"} == expected_fail
     assert result["LS-DAT-03"] == "warn"
@@ -118,7 +132,10 @@ def test_verdict_phrase_names_how_soon():
     from lexshield.report import verdict_phrase
 
     rules = [rule for rule in load_rules() if rule.name in ("downloads", "llmnr")]
-    facts = {"collected_at": "2026-11-05T09:00:00", "network": {"llmnr_policy": None},
-             "local_docs": {"desktop": {"documents": 500, "older_than_30_days": 0}}}
+    facts = {
+        "collected_at": "2026-11-05T09:00:00",
+        "network": {"llmnr_policy": None},
+        "local_docs": {"desktop": {"documents": 500, "older_than_30_days": 0}},
+    }
     report = evaluate(facts, rules=rules)
     assert report.assessment() == "GERING" and verdict_phrase(report) == "nur Kleinigkeiten offen"

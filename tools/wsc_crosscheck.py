@@ -59,8 +59,10 @@ def main() -> int:
             method(product, 7, POINTER(ctypes.c_wchar_p))(byref(name))  # get_ProductName
             method(product, 8, POINTER(c_int))(byref(state))  # get_ProductState
             method(product, 9, POINTER(c_int))(byref(signatures))  # get_SignatureStatus
-            print(f"{label:<9} {name.value:<35} {STATES.get(state.value, state.value):<8} "
-                  f"signatures {SIGNATURES.get(signatures.value, signatures.value)}")
+            print(
+                f"{label:<9} {name.value:<35} {STATES.get(state.value, state.value):<8} "
+                f"signatures {SIGNATURES.get(signatures.value, signatures.value)}"
+            )
     return 0
 
 

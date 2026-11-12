@@ -33,24 +33,65 @@ COMMANDS = {
     name.casefold()
     for name in (
         # reading
-        "Get-ItemProperty", "Get-ChildItem", "Get-CimInstance", "Get-MpComputerStatus", "Get-NetFirewallProfile",
-        "Get-BitLockerVolume", "Get-HotFix", "Get-LocalUser", "Get-LocalGroupMember", "Get-SmbServerConfiguration",
-        "Get-Culture", "Get-Date", "Test-Path",
+        "Get-ItemProperty",
+        "Get-ChildItem",
+        "Get-CimInstance",
+        "Get-MpComputerStatus",
+        "Get-NetFirewallProfile",
+        "Get-BitLockerVolume",
+        "Get-HotFix",
+        "Get-LocalUser",
+        "Get-LocalGroupMember",
+        "Get-SmbServerConfiguration",
+        "Get-Culture",
+        "Get-Date",
+        "Test-Path",
         # in memory only
-        "New-Object", "Where-Object", "Sort-Object", "Select-Object", "ForEach-Object", "ConvertTo-Json",
+        "New-Object",
+        "Where-Object",
+        "Sort-Object",
+        "Select-Object",
+        "ForEach-Object",
+        "ConvertTo-Json",
         "Write-Output",
         # the collector's own helpers, themselves checked here
-        "Get-Safe", "Get-RegValue", "Get-PowerSetting", "Test-ModernStandby",
+        "Get-Safe",
+        "Get-RegValue",
+        "Get-PowerSetting",
+        "Test-ModernStandby",
     )
 }
 # Every parameter any command gets, written out in full: "-com" or "-Comp" would be abbreviations.
 PARAMETERS = {
     p.casefold()
     for p in (
-        "-ClassName", "-Namespace", "-Filter", "-Path", "-Name", "-Group", "-Property", "-Descending", "-First",
-        "-Depth", "-Compress", "-ComObject", "-TypeName", "-ArgumentList", "-File", "-Recurse", "-Force",
-        "-ErrorAction", "-MountPoint", "-SID", "-Block", "-SubGroup", "-Setting", "-Directory",
-        "-ExpandProperty", "-LiteralPath", "-PolicyStore",
+        "-ClassName",
+        "-Namespace",
+        "-Filter",
+        "-Path",
+        "-Name",
+        "-Group",
+        "-Property",
+        "-Descending",
+        "-First",
+        "-Depth",
+        "-Compress",
+        "-ComObject",
+        "-TypeName",
+        "-ArgumentList",
+        "-File",
+        "-Recurse",
+        "-Force",
+        "-ErrorAction",
+        "-MountPoint",
+        "-SID",
+        "-Block",
+        "-SubGroup",
+        "-Setting",
+        "-Directory",
+        "-ExpandProperty",
+        "-LiteralPath",
+        "-PolicyStore",
     )
 }
 # Native programs, called by their full path in System32 so that nothing earlier in PATH answers,
@@ -62,14 +103,29 @@ PROGRAMS = {
 }
 COM_OBJECTS = {"Shell.Application", "Microsoft.Update.Session"}
 NEW_TYPES = {
-    "System.Text.UTF8Encoding", "System.Collections.Generic.List[string]", "Security.Principal.SecurityIdentifier",
+    "System.Text.UTF8Encoding",
+    "System.Collections.Generic.List[string]",
+    "Security.Principal.SecurityIdentifier",
     "Security.Principal.NTAccount",
 }
 # Methods that only read, whatever object they are called on.
 METHODS = {
-    "AddDays", "Contains", "ContainsKey", "CreateUpdateSearcher", "ExtendedProperty", "GetTotalHistoryCount",
-    "GetType", "GetValue", "IsInRole", "NameSpace", "QueryHistory", "Split", "ToLowerInvariant", "ToString",
-    "Translate", "Trim",
+    "AddDays",
+    "Contains",
+    "ContainsKey",
+    "CreateUpdateSearcher",
+    "ExtendedProperty",
+    "GetTotalHistoryCount",
+    "GetType",
+    "GetValue",
+    "IsInRole",
+    "NameSpace",
+    "QueryHistory",
+    "Split",
+    "ToLowerInvariant",
+    "ToString",
+    "Translate",
+    "Trim",
 }
 # Methods that can write on some objects: allowed only where the script uses them.
 GUARDED_METHODS = {
@@ -79,13 +135,28 @@ GUARDED_METHODS = {
     "InvokeMember": lambda m: m["args"][1:2] == ["GetProperty"],  # read a property, never call a method
 }
 STATIC_METHODS = {
-    ("Convert", "ToInt64"), ("Environment", "ExpandEnvironmentVariables"), ("Math", "Min"),
+    ("Convert", "ToInt64"),
+    ("Environment", "ExpandEnvironmentVariables"),
+    ("Math", "Min"),
     ("Security.Principal.WindowsIdentity", "GetCurrent"),
 }
 TYPES = {
-    "ADSI", "bool", "Console", "Convert", "Environment", "int", "int64", "Math", "ordered", "scriptblock", "string",
-    "Security.Principal.NTAccount", "Security.Principal.SecurityIdentifier", "Security.Principal.WindowsBuiltInRole",
-    "Security.Principal.WindowsIdentity", "Security.Principal.WindowsPrincipal",
+    "ADSI",
+    "bool",
+    "Console",
+    "Convert",
+    "Environment",
+    "int",
+    "int64",
+    "Math",
+    "ordered",
+    "scriptblock",
+    "string",
+    "Security.Principal.NTAccount",
+    "Security.Principal.SecurityIdentifier",
+    "Security.Principal.WindowsBuiltInRole",
+    "Security.Principal.WindowsIdentity",
+    "Security.Principal.WindowsPrincipal",
 }
 ASSIGNED = {"member:[Console]::OutputEncoding"}  # the output encoding of this one process
 DRIVES = {"env"}  # $env:USERPROFILE and the like, read only
@@ -96,9 +167,19 @@ DYNAMIC_CALLS = {"$Block"}
 def inventories(paths: list[Path]) -> dict[str, dict]:
     """One PowerShell run for all scripts: the inventory of each, keyed by its path."""
     run = subprocess.run(
-        [POWERSHELL, "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", str(INVENTORY),
-         *map(str, paths)],
-        capture_output=True, timeout=300, check=True,
+        [
+            POWERSHELL,
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            str(INVENTORY),
+            *map(str, paths),
+        ],
+        capture_output=True,
+        timeout=300,
+        check=True,
     )
     return json.loads(run.stdout.decode("utf-8-sig"))
 
@@ -229,9 +310,32 @@ def test_allowlist_catches_known_bypasses(snippet, planted):
 # --------------------------------------------------------------------------- text checks, on every platform
 
 FORBIDDEN = (
-    "invoke-", "add-type", "set-", "remove-", "new-item", "start-", "stop-", "restart-", "enable-", "disable-",
-    "out-file", "webclient", "webrequest", "downloadstring", "http://", "https://", "encodedcommand", "iex ",
-    ".setvalue(", ".deletevalue(", ".delete(", "reg.exe", "netsh", "bcdedit", "manage-bde", "ldap://",
+    "invoke-",
+    "add-type",
+    "set-",
+    "remove-",
+    "new-item",
+    "start-",
+    "stop-",
+    "restart-",
+    "enable-",
+    "disable-",
+    "out-file",
+    "webclient",
+    "webrequest",
+    "downloadstring",
+    "http://",
+    "https://",
+    "encodedcommand",
+    "iex ",
+    ".setvalue(",
+    ".deletevalue(",
+    ".delete(",
+    "reg.exe",
+    "netsh",
+    "bcdedit",
+    "manage-bde",
+    "ldap://",
 )
 
 
@@ -259,22 +363,62 @@ def test_collector_never_records_file_names():
 # --------------------------------------------------------------------------- Python
 
 PY_IMPORTS = {
-    "__future__", "argparse", "ast", "codecs", "dataclasses", "datetime", "importlib.resources", "io", "json", "os", "pathlib", "re",
-    "shutil", "sys", "textwrap", "tomllib", "typing",
+    "__future__",
+    "argparse",
+    "ast",
+    "codecs",
+    "collections.abc",
+    "dataclasses",
+    "datetime",
+    "importlib.resources",
+    "io",
+    "json",
+    "os",
+    "pathlib",
+    "re",
+    "shutil",
+    "sys",
+    "textwrap",
+    "tomllib",
+    "typing",
 }
 SUBPROCESS_FILES = {"collector.py"}  # runs powershell.exe with collect.ps1, nothing else
 CTYPES_FILES = {"cli.py"}  # switches on colours in the classic Windows console, nothing else
 MODULES = {"os", "shutil", "subprocess", "sys", "ctypes", "windll", "kernel32"}
 MODULE_ATTRIBUTES = {
-    "os.environ", "os.name", "shutil.get_terminal_size", "subprocess.run", "subprocess.TimeoutExpired",
-    "sys.stdout", "sys.stderr", "sys.argv", "sys.exit", "sys.flags",
-    "ctypes.windll", "ctypes.c_uint32", "ctypes.byref", "windll.kernel32",
+    "os.environ",
+    "os.name",
+    "shutil.get_terminal_size",
+    "subprocess.run",
+    "subprocess.TimeoutExpired",
+    "sys.stdout",
+    "sys.stderr",
+    "sys.argv",
+    "sys.exit",
+    "sys.flags",
+    "ctypes.windll",
+    "ctypes.c_uint32",
+    "ctypes.byref",
+    "windll.kernel32",
     # the console of this process: its handle, its mode and its code page
-    "kernel32.GetStdHandle", "kernel32.GetConsoleMode", "kernel32.SetConsoleMode", "kernel32.GetConsoleOutputCP",
+    "kernel32.GetStdHandle",
+    "kernel32.GetConsoleMode",
+    "kernel32.SetConsoleMode",
+    "kernel32.GetConsoleOutputCP",
 }
 FORBIDDEN_CALLS = {"eval", "exec", "compile", "__import__", "breakpoint"}
 FORBIDDEN_ATTRIBUTES = {
-    "unlink", "rmdir", "rmtree", "removedirs", "remove", "rename", "chmod", "system", "popen", "startfile", "kill",
+    "unlink",
+    "rmdir",
+    "rmtree",
+    "removedirs",
+    "remove",
+    "rename",
+    "chmod",
+    "system",
+    "popen",
+    "startfile",
+    "kill",
     "import_module",
 }
 
@@ -292,11 +436,15 @@ def python_violations(source: str, filename: str) -> list[str]:
         elif isinstance(node, ast.ImportFrom) and node.level == 0:
             # "from importlib import resources" is fine; "from os import system" is not.
             names = [f"{node.module}.{a.name}" for a in node.names]
-            found += [f"from {node.module} import {n.rsplit('.', 1)[1]}" for n in names
-                      if node.module not in allowed and n not in allowed]
+            found += [
+                f"from {node.module} import {n.rsplit('.', 1)[1]}"
+                for n in names
+                if node.module not in allowed and n not in allowed
+            ]
             if node.module in MODULES:
-                found += [f"from {node.module} import {n.rsplit('.', 1)[1]}" for n in names
-                          if n not in MODULE_ATTRIBUTES]
+                found += [
+                    f"from {node.module} import {n.rsplit('.', 1)[1]}" for n in names if n not in MODULE_ATTRIBUTES
+                ]
         elif isinstance(node, ast.Attribute):
             # ctypes.windll.kernel32.X counts as kernel32.X
             owner = node.value.attr if isinstance(node.value, ast.Attribute) else getattr(node.value, "id", None)

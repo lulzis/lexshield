@@ -9,8 +9,22 @@ from pathlib import Path
 
 # Sections the collector writes as objects. Anything else in their place counts as missing.
 SECTIONS = (
-    "host", "os", "antivirus", "defender", "firewall", "bitlocker", "updates", "accounts",
-    "uac", "smb1", "rdp", "lock", "office", "removable", "network", "local_docs",
+    "host",
+    "os",
+    "antivirus",
+    "defender",
+    "firewall",
+    "bitlocker",
+    "updates",
+    "accounts",
+    "uac",
+    "smb1",
+    "rdp",
+    "lock",
+    "office",
+    "removable",
+    "network",
+    "local_docs",
 )
 # Control characters, ESC included: in a terminal they move the cursor, in Markdown
 # a line break inside a name starts a new heading.
